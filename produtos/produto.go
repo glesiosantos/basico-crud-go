@@ -1,12 +1,12 @@
 package produtos
 
-import (
-	"time"
-)
+// import (
+// 	"time"
+// )
 
 type Produto struct {
 	Descricao string
 	Preco float64
 	quantidade int
-	criadoEm time.Date
+	// criadoEm time.Date
 }

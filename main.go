@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"log"
-
 	"github.com/jackc/pgx/v5/pgxpool"
+	p "basico-crud-go/produtos"
 )
 
 func main() {
@@ -18,21 +18,12 @@ func main() {
 
 	defer db.Close()
 
-	sql := `
-		INSERT INTO produtos (descricao, preco, quantidade)
-		VALUES ($1,$2,$3)
-	`
-	_, err = db.Exec(
-		context.Background(),
-		sql,
-		"Projeto Epson de 1800 Lumines",
-		2995.9,
-		1,
-	)
-
+	// Criar uma categoria
+	err = p.AddCategoria(db, "Mesa & Banho")
+	
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Error.: ", err)
 	}
 
-	fmt.Println("Produto registrado com sucesso!!!" )
+	fmt.Println("Categoria registrada com sucesso!!!" )
 }
