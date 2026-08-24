@@ -19,11 +19,22 @@ func main() {
 	defer db.Close()
 
 	// Criar uma categoria
-	err = p.AddCategoria(db, "Mesa & Banho")
+	// err = p.AddCategoria(db, "Informatica")
 	
+	// categoria, err := p.ListarCategorias(db)
+	categoria, err := p.BuscarCategoriaPeloId(db, 1)
+
 	if err != nil {
 		log.Fatal("Error.: ", err)
 	}
 
-	fmt.Println("Categoria registrada com sucesso!!!" )
+	// for _, categoria := range categorias {
+	// 	fmt.Println(
+	// 		categoria.Id,
+	// 		categoria.Nome,
+	// 	)
+	// }
+
+	// fmt.Println("Categoria registrada com sucess o!!!" )
+	fmt.Printf("%d - %s\n", categoria.Id, categoria.Nome)
 }
