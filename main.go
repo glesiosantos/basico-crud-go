@@ -18,26 +18,21 @@ func main() {
 
 	defer db.Close()
 
-	//Produto
-	// Descricao, Preco, Quantidade 
-
-
 	sql := `
 		INSERT INTO produtos (descricao, preco, quantidade)
-		VALUE ($1,$2,$3)
+		VALUES ($1,$2,$3)
 	`
-
-	_, err := db.Exec(
+	_, err = db.Exec(
 		context.Background(),
 		sql,
-		"Cadeira de Vermelha Diretora com rodinhas e Apoio",
-		675.90,
-		10
+		"Projeto Epson de 1800 Lumines",
+		2995.9,
+		1,
 	)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Produto registrado com sucesso!!!" )
+	fmt.Println("Produto registrado com sucesso!!!" )
 }
