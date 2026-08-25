@@ -7,6 +7,7 @@ CREATE TABLE produtos (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(150) NOT NULL UNIQUE,
     preco NUMERIC(10,2) NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     categoria_id INTEGER NOT NULL,
     CONSTRAINT fk_categoria
         FOREIGN KEY (categoria_id)

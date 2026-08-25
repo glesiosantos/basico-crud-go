@@ -80,11 +80,11 @@ func AtualizarCategoria(db *pgxpool.Pool, idCategoria int, novoNome string) erro
 	sql := `
 		UPDATE categorias SET nome = $1 WHERE id = $2
 	`
-	err := db.Exec(
+	_, err := db.Exec(
 		context.Background(),
 		sql,
 		novoNome,
-		idCategoria
+		idCategoria,
 	)
 
 	return err
@@ -94,10 +94,10 @@ func DeletarCategoria(db *pgxpool.Pool, idCategoria int) error {
 	sql := `
 		DELETE FROM categorias WHERE id = $1
 	`
-	err := db.Exec(
+	_, err := db.Exec(
 		context.Background(),
 		sql,
-		idCategoria
+		idCategoria,
 	)
 
 	return err

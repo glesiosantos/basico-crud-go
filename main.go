@@ -18,23 +18,33 @@ func main() {
 
 	defer db.Close()
 
-	// Criar uma categoria
-	// err = p.AddCategoria(db, "Informatica")
-	
-	// categoria, err := p.ListarCategorias(db)
-	categoria, err := p.BuscarCategoriaPeloId(db, 1)
+	produto := p.Produto{
+		Descricao: "Monitor de 22 polegadas",
+		Preco: 1900.0,
+		Quantidade: 10,
+		Categoria: p.Categoria {
+			Id: 2,
+		},
+	}
+
+	err = p.AddProduto(db, produto)
 
 	if err != nil {
 		log.Fatal("Error.: ", err)
 	}
 
-	// for _, categoria := range categorias {
-	// 	fmt.Println(
-	// 		categoria.Id,
-	// 		categoria.Nome,
-	// 	)
-	// }
+	produtos, err := p.ListarProdutos(db)
 
-	// fmt.Println("Categoria registrada com sucess o!!!" )
-	fmt.Printf("%d - %s\n", categoria.Id, categoria.Nome)
+	if err != nil {
+		log.Fatal("Error.: ", err)
+	}
+
+	for _, produto := range produtos {
+		fmt.Printf("%d - %s - %s\n", 
+			produto.Id, 
+			produto.Descricao, 
+			produto.Categoria.Nome,
+		)
+	}
+
 }
