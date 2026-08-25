@@ -75,3 +75,30 @@ func BuscarCategoriaPeloId(db *pgxpool.Pool, idCategoria int)(Categoria, error) 
 
 	return categoria, err
 }
+
+func AtualizarCategoria(db *pgxpool.Pool, idCategoria int, novoNome string) error {
+	sql := `
+		UPDATE categorias SET nome = $1 WHERE id = $2
+	`
+	err := db.Exec(
+		context.Background(),
+		sql,
+		novoNome,
+		idCategoria
+	)
+
+	return err
+}
+
+func DeletarCategoria(db *pgxpool.Pool, idCategoria int) error {
+	sql := `
+		DELETE FROM categorias WHERE id = $1
+	`
+	err := db.Exec(
+		context.Background(),
+		sql,
+		idCategoria
+	)
+
+	return err
+}
