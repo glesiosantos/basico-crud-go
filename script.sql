@@ -5,8 +5,9 @@ CREATE TABLE categorias (
 
 CREATE TABLE produtos (
     id SERIAL PRIMARY KEY,
-    nome VARCHAR(150) NOT NULL UNIQUE,
+    descricao VARCHAR(150) NOT NULL UNIQUE,
     preco NUMERIC(10,2) NOT NULL,
+    quantidade INTEGER NOT NULL,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     categoria_id INTEGER NOT NULL,
     CONSTRAINT fk_categoria
