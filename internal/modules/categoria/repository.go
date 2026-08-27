@@ -1,22 +1,27 @@
-package produtos
+package categoria
 
 import (
 	"context"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type Categoria struct {
-	Id int
-	Nome string
+type Repository struct {
+	db *pgxpool.Pool
 }
 
-func AddCategoria(db *pgxpool.Pool, nome string) error {
+func NewRepository(db *pgxpool.Pool) *Repository {
+	return &Repository{
+		db: db,
+	}
+} 
+
+func (r *Repository) AddCategoria(nome string) error {
 	
 	sql := `
 		INSERT INTO categorias (nome)
 		VALUES ($1)
 	`
-	_, err := db.Exec(
+	_, err := r.db.Exec(
 		context.Background(),
 		sql,
 		nome,
@@ -25,11 +30,11 @@ func AddCategoria(db *pgxpool.Pool, nome string) error {
 	return err
 }
 
-func ListarCategorias(db *pgxpool.Pool)([]Categoria, error) {
+func (r *Repository) ListarCategorias()([]Categoria, error) {
 	sql := `
 		SELECT id, nome FROM categorias
 	`
-	linhas, err := db.Query(context.Background(), sql)
+	linhas, err := r.db.Query(context.Background(), sql)
 
 	if err != nil {
 		return nil, err
@@ -57,14 +62,14 @@ func ListarCategorias(db *pgxpool.Pool)([]Categoria, error) {
 	return categorias, nil
 }
 
-func BuscarCategoriaPeloId(db *pgxpool.Pool, idCategoria int)(Categoria, error) {
+func (r *Repository) BuscarCategoriaPeloId(idCategoria int)(Categoria, error) {
 	
 	var categoria Categoria
 
 	sql := `
 		SELECT id, nome FROM categorias WHERE id = $1
 	`
-	err := db.QueryRow(
+	err := r.db.QueryRow(
 		context.Background(),
 		sql,
 		idCategoria,
@@ -76,11 +81,11 @@ func BuscarCategoriaPeloId(db *pgxpool.Pool, idCategoria int)(Categoria, error) 
 	return categoria, err
 }
 
-func AtualizarCategoria(db *pgxpool.Pool, idCategoria int, novoNome string) error {
+func (r *Repository) AtualizarCategoria(idCategoria int, novoNome string) error {
 	sql := `
 		UPDATE categorias SET nome = $1 WHERE id = $2
 	`
-	_, err := db.Exec(
+	_, err := r.db.Exec(
 		context.Background(),
 		sql,
 		novoNome,
@@ -90,11 +95,11 @@ func AtualizarCategoria(db *pgxpool.Pool, idCategoria int, novoNome string) erro
 	return err
 }
 
-func DeletarCategoria(db *pgxpool.Pool, idCategoria int) error {
+func (r *Repository) DeletarCategoria(idCategoria int) error {
 	sql := `
 		DELETE FROM categorias WHERE id = $1
 	`
-	_, err := db.Exec(
+	_, err := r.db.Exec(
 		context.Background(),
 		sql,
 		idCategoria,
