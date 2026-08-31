@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
+	"net/http"
+	"github.com/go-chi/chi/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	p "basico-crud-go/produtos"
+	"basico-crud-go/internal/modules/categoria"
+
 )
 
 func main() {
@@ -18,33 +20,25 @@ func main() {
 
 	defer db.Close()
 
-	produto := p.Produto{
-		Descricao: "Monitor de 22 polegadas",
-		Preco: 1900.0,
-		Quantidade: 10,
-		Categoria: p.Categoria {
-			Id: 2,
-		},
-	}
+	repository := categoria.NewRepository(db)
+	service := categoria.NewService(repository)
+	handler := categoria.NewHandler(service)
 
-	err = p.AddProduto(db, produto)
+	router := chi.NewRouter()
+
+	router.Get("/categorias", handler.ListarCategorias,)
+	router.Post("/categorias", handler.CadastrarCategorias,)
+
+	log.Println(
+        "Servidor executando em http://localhost:8081",
+    )
+
+	err = http.ListenAndServe(
+		":8081",
+		router,
+	)
 
 	if err != nil {
-		log.Fatal("Error.: ", err)
+		log.Fatal(err)
 	}
-
-	produtos, err := p.ListarProdutos(db)
-
-	if err != nil {
-		log.Fatal("Error.: ", err)
-	}
-
-	for _, produto := range produtos {
-		fmt.Printf("%d - %s - %s\n", 
-			produto.Id, 
-			produto.Descricao, 
-			produto.Categoria.Nome,
-		)
-	}
-
 }

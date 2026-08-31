@@ -15,7 +15,7 @@ func NewRepository(db *pgxpool.Pool) *Repository {
 	}
 } 
 
-func (r *Repository) AddCategoria(nome string) error {
+func (r *Repository) AddCategoria(categoria Categoria) error {
 	
 	sql := `
 		INSERT INTO categorias (nome)
@@ -24,7 +24,7 @@ func (r *Repository) AddCategoria(nome string) error {
 	_, err := r.db.Exec(
 		context.Background(),
 		sql,
-		nome,
+		categoria.Nome,
 	)
 
 	return err
