@@ -1,11 +1,15 @@
 package categoria
 
-import "github.com/jackc/pgx/v5/pgxpool"
+import (
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/go-chi/chi/v5"
+)
 
-func NewModule(db *pgxpool) *Handler {
-	repository := NewRepository(db)
+func NewRegisterModule(db *pgxpool.Pool, router chi.Router){
+	repository := newRepository(db)
 	service := NewService(repository)
 	handler := NewHandler(service)
 
-	return handler
+	router.Get("/categorias", handler.ListarCategorias,)
+	router.Post("/categorias", handler.CadastrarCategorias,)
 }

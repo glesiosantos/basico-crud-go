@@ -31,12 +31,9 @@ func main() {
 
 	defer db.Close()
 
-	categoriaModule := categoria.NewModule(db)
-
+	
 	router := chi.NewRouter()
-
-	router.Get("/categorias", handler.ListarCategorias,)
-	router.Post("/categorias", handler.CadastrarCategorias,)
+	categoria.NewRegisterModule(db, router)
 
 	log.Println(
         "Servidor executando em http://localhost:8082",
