@@ -1,18 +1,29 @@
 package main
 
 import (
-	"context"
 	"log"
 	"net/http"
+	"os"
+	"github.com/joho/godotenv"
 	"github.com/go-chi/chi/v5"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"basico-crud-go/infra/database"
 	"basico-crud-go/internal/modules/categoria"
-
 )
 
 func main() {
-	url := "postgres://postgres:102030@localhost:5432/basicodb"
-	db, err := pgxpool.New(context.Background(), url)
+	err := godotenv.Load()
+
+	if err != nil {
+		log.Fatal("Erro ao carregar arquivo .env")
+	}
+
+	url := os.Getenv("DATABASE_URL")
+
+	if url == "" {
+		log.Fatal("DATABASE_URL não foi definida")
+	}
+
+	db, err := database.NewPostgresPool(url)
 
 	if err != nil {
 		log.Fatal("Erro de conexão", err)
@@ -20,9 +31,7 @@ func main() {
 
 	defer db.Close()
 
-	repository := categoria.NewRepository(db)
-	service := categoria.NewService(repository)
-	handler := categoria.NewHandler(service)
+	categoriaModule := categoria.NewModule(db)
 
 	router := chi.NewRouter()
 
@@ -30,11 +39,11 @@ func main() {
 	router.Post("/categorias", handler.CadastrarCategorias,)
 
 	log.Println(
-        "Servidor executando em http://localhost:8081",
+        "Servidor executando em http://localhost:8082",
     )
 
 	err = http.ListenAndServe(
-		":8081",
+		":8082",
 		router,
 	)
 
