@@ -1,26 +1,26 @@
-package produtos
+package produto
 
 import (
 	"context"
 	"github.com/jackc/pgx/v5/pgxpool"
- 	"time"
 )
 
-type Produto struct {
-	Id int
-	Descricao string
-	Preco float64
-	Quantidade int
-	Categoria Categoria
-	CriadoEm time.Time
+type Repository struct {
+	db *pgxpool.Pool
 }
 
-func AddProduto(db *pgxpool.Pool, produto Produto) error {
+func newRepository(db *pgxpool.Pool) *Repository {
+	return &Repository{
+		db: db,
+	}
+} 
+
+func (r *Repository) addProduto(produto Produto) error {
 	sql := `
 		INSERT INTO produtos (descricao, preco, quantidade, categoria_id) 
 		VALUES ($1, $2, $3, $4)
 	`
-	_, err := db.Exec(
+	_, err := r.db.Exec(
 		context.Background(),
 		sql,
 		produto.Descricao,
@@ -31,14 +31,14 @@ func AddProduto(db *pgxpool.Pool, produto Produto) error {
 	return err
 }
 
-func ListarProdutos(db *pgxpool.Pool) ([]Produto, error) {
+func (r *Repository) listarProdutos() ([]Produto, error) {
 	sql := `
 		SELECT p.id, p.descricao, p.preco, p.quantidade, c.id, c.nome 
 		FROM produtos p
 		JOIN categorias c ON c.id = p.categoria_id
 		ORDER BY p.id
 	`
-	linhas, err := db.Query(context.Background(), sql)
+	linhas, err := r.db.Query(context.Background(), sql)
 
 	if err != nil {
 		return nil, err

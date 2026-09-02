@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"basico-crud-go/infra/database"
 	"basico-crud-go/internal/modules/categoria"
+	"basico-crud-go/internal/modules/produto"
 )
 
 func main() {
@@ -34,6 +35,7 @@ func main() {
 	
 	router := chi.NewRouter()
 	categoria.NewRegisterModule(db, router)
+	produto.NewRegisterModule(db, router)
 
 	log.Println(
         "Servidor executando em http://localhost:8082",
