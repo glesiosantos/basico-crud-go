@@ -2,16 +2,19 @@ package main
 
 import (
 	"log"
+	"context"
 	"net/http"
 	"os"
 	"github.com/joho/godotenv"
 	"github.com/go-chi/chi/v5"
 	"basico-crud-go/infra/database"
+	"basico-crud-go/infra/auth"
 	"basico-crud-go/internal/modules/categoria"
 	"basico-crud-go/internal/modules/produto"
 )
 
 func main() {
+	context := context.Background()
 	err := godotenv.Load()
 
 	if err != nil {
@@ -24,7 +27,7 @@ func main() {
 		log.Fatal("DATABASE_URL não foi definida")
 	}
 
-	db, err := database.NewPostgresPool(url)
+	db, err := database.NewPostgresPool(url, context)
 
 	if err != nil {
 		log.Fatal("Erro de conexão", err)
@@ -32,7 +35,8 @@ func main() {
 
 	defer db.Close()
 
-	
+	keycloack, err := auth.NewKeycloak(context)
+
 	router := chi.NewRouter()
 	categoria.NewRegisterModule(db, router)
 	produto.NewRegisterModule(db, router)
